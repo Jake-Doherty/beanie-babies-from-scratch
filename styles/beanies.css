@@ -54,6 +54,7 @@ li > div > h2 {
 label {
     display: grid;
     justify-content: center;
+    justify-items: center;
 }
 
 #form-label {

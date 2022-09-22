@@ -6,20 +6,23 @@ import { renderAstroOption, renderBeanie } from './render-beanies.js';
 const beanieList = document.getElementById('beanie-list');
 const astroSelect = document.getElementById('astrology-select');
 const searchForm = document.getElementById('search-form');
+const notificationDisplay = document.getElementById('notification-display');
 
 /* State */
 let error = null;
+let count = 0;
 let astroSigns = [];
 let beanies = [];
 
 /* Events */
 window.addEventListener('load', async () => {
+    findBeanies();
+
     const response = await getAstroSigns();
 
     error = response.error;
     astroSigns = response.data;
 
-    findBeanies();
     if (!error) {
         displayAstroSignOptions();
     }
@@ -30,7 +33,9 @@ async function findBeanies(name, astroSign) {
 
     error = response.error;
     beanies = response.data;
+    count = response.count;
 
+    displayNotifications();
     if (!error) {
         displayBeanies();
     }
@@ -50,6 +55,14 @@ function displayBeanies() {
     for (const beanie of beanies) {
         const beanieElement = renderBeanie(beanie);
         beanieList.append(beanieElement);
+    }
+}
+
+function displayNotifications() {
+    if (error) {
+        notificationDisplay.textContent = error.message;
+    } else {
+        notificationDisplay.textContent = `Displaying ${beanies.length} of ${count} Beanie Babies`;
     }
 }
 
