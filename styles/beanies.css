@@ -50,3 +50,39 @@ li > div > h2 {
     gap: 10px;
     justify-items: center;
 }
+
+label {
+    display: grid;
+    justify-content: center;
+}
+
+#form-label {
+    margin: 0;
+}
+
+section {
+    margin: 10px;
+}
+
+form {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    align-items: flex-end;
+}
+
+input {
+    height: 38px;
+    width: 200px;
+    font-size: 1.5em;
+}
+
+#submit {
+    height: 38px;
+    width: 38px;
+    border-radius: 50%;
+}
+
+select {
+    height: 38px;
+}
