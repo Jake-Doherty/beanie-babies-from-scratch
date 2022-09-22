@@ -15,13 +15,16 @@ export function renderBeanie(beanie) {
     animal.textContent = beanie.animal;
 
     const astrologySign = document.createElement('span');
-    astrologySign.textContent = beanie.astrologySign;
+    astrologySign.textContent = beanie.astroSign;
+
+    const releaseYear = document.createElement('span');
+    releaseYear.textContent = `Released in ${beanie.releaseYear}`;
 
     const beanieImage = document.createElement('img');
     beanieImage.src = beanie.image;
     beanieImage.alt = beanie.title;
 
-    attributes.append(animal, astrologySign);
+    attributes.append(animal, astrologySign, releaseYear);
 
     beanieInfoDiv.append(h2, attributes);
 

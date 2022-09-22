@@ -1,5 +1,7 @@
 li:hover {
     box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.705);
+    transform: scale(105%);
+    transition: all 100ms ease-in;
 }
 
 li {
@@ -15,6 +17,7 @@ li > div {
     display: grid;
     justify-items: center;
     align-items: center;
+    color: whitesmoke;
 }
 
 li > img {
@@ -24,7 +27,26 @@ li > img {
     box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.705);
 }
 
+li > div > h2 {
+    margin: 10px;
+    padding: 5px;
+    text-align: center;
+    background-color: whitesmoke;
+    border-radius: 40px;
+    box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.705);
+    color: darkslategray;
+}
+
 .attr {
     display: flex;
     flex-direction: column;
+    align-items: center;
+}
+
+#beanie-list {
+    display: grid;
+    grid-template: 190px / repeat(auto-fill, minmax(400px, 1fr));
+    grid-auto-flow: auto;
+    gap: 10px;
+    justify-items: center;
 }
