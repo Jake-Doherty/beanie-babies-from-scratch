@@ -5,6 +5,7 @@ import { renderAstroOption, renderBeanie } from './render-beanies.js';
 /* Get DOM Elements */
 const beanieList = document.getElementById('beanie-list');
 const astroSelect = document.getElementById('astrology-select');
+const searchForm = document.getElementById('search-form');
 
 /* State */
 let error = null;
@@ -13,20 +14,19 @@ let beanies = [];
 
 /* Events */
 window.addEventListener('load', async () => {
-    findBeanies();
-
     const response = await getAstroSigns();
 
     error = response.error;
     astroSigns = response.data;
 
+    findBeanies();
     if (!error) {
         displayAstroSignOptions();
     }
 });
 
-async function findBeanies(title, releaseYear) {
-    const response = await getBeanies(title, releaseYear);
+async function findBeanies(name, astroSign) {
+    const response = await getBeanies(name, astroSign);
 
     error = response.error;
     beanies = response.data;
@@ -35,6 +35,12 @@ async function findBeanies(title, releaseYear) {
         displayBeanies();
     }
 }
+
+searchForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const formData = new FormData(searchForm);
+    findBeanies(formData.get('name'), formData.get('astroSign'));
+});
 
 /* Display Functions */
 
