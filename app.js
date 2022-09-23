@@ -14,7 +14,6 @@ const themeSelect = document.getElementById('theme-select');
 const animalSelect = document.getElementById('animal-select');
 const searchForm = document.getElementById('search-form');
 const notificationDisplay = document.getElementById('notification-display');
-const moreBeaniesButton = document.getElementById('more-beanies-button');
 
 /* State */
 let error = null;
@@ -37,48 +36,78 @@ let paging = {
 };
 
 /* Events */
+/*                          REFACTORED!!                      */
+
 window.addEventListener('load', async () => {
     findBeanies();
 
-    const response = await getAstroSigns();
+    const astro = await getAstroSigns();
+    const theme = await getThemes();
+    const animal = await getAnimals();
+
+    const response = await Promise.all([astro, theme, animal]);
 
     error = response.error;
-    astroSigns = response.data;
+    astroSigns = astro.data;
+    themes = theme.data;
+    animals = animal.data;
 
     if (!error) {
         displayAstroSignOptions();
-    }
-    console.log(response);
-});
-
-window.addEventListener('load', async () => {
-    findBeanies();
-
-    const response = await getThemes();
-
-    error = response.error;
-    themes = response.data;
-
-    if (!error) {
         displayThemeOptions();
-    }
-});
-
-window.addEventListener('load', async () => {
-    findBeanies();
-
-    const response = await getAnimals();
-
-    error = response.error;
-    animals = response.data;
-
-    if (!error) {
         displayAnimalOptions();
     }
 });
 
-moreBeaniesButton.addEventListener('click', () => {
-    getMoreBeanies();
+/*                          old code!!                      */
+
+// window.addEventListener('load', async () => {
+//     findBeanies();
+
+//     const response = await getAstroSigns();
+
+//     error = response.error;
+//     astroSigns = response.data;
+
+//     if (!error) {
+//         displayAstroSignOptions();
+//     }
+// });
+
+// window.addEventListener('load', async () => {
+//     findBeanies();
+
+//     const response = await getThemes();
+
+//     error = response.error;
+//     themes = response.data;
+
+//     if (!error) {
+//         displayThemeOptions();
+//     }
+// });
+
+// window.addEventListener('load', async () => {
+//     findBeanies();
+
+//     const response = await getAnimals();
+
+//     error = response.error;
+//     animals = response.data;
+
+//     if (!error) {
+//         displayAnimalOptions();
+//     }
+// });
+
+const observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+        if (entry.isIntersecting) {
+            observer.unobserve(entry.target);
+            // do magic here
+            getMoreBeanies();
+        }
+    }
 });
 
 async function getMoreBeanies() {
@@ -106,7 +135,9 @@ async function findBeanies() {
     count = response.count;
 
     displayNotifications();
-    displayBeanies();
+    if (!error) {
+        displayBeanies();
+    }
 }
 
 searchForm.addEventListener('submit', (e) => {
@@ -119,6 +150,8 @@ searchForm.addEventListener('submit', (e) => {
     filter.theme = formData.get('theme');
     filter.animal = formData.get('animal');
 
+    paging.page = 1;
+
     findBeanies();
 });
 
@@ -127,13 +160,19 @@ searchForm.addEventListener('submit', (e) => {
 function displayBeanies() {
     beanieList.innerHTML = '';
 
-    displayMoreBeanies();
+    displayMoreBeanies(beanies);
 }
 
 function displayMoreBeanies(moreBeanies) {
-    for (const beanie of beanies) {
+    let lastEl = null;
+    for (const beanie of moreBeanies) {
         const beanieElement = renderBeanie(beanie);
         beanieList.append(beanieElement);
+        lastEl = beanieElement;
+    }
+
+    if (beanies.length < count) {
+        observer.observe(lastEl);
     }
 }
 
