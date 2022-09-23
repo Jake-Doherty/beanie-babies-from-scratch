@@ -39,3 +39,17 @@ export function renderAstroOption(astroSign) {
     option.value = astroSign.name;
     return option;
 }
+
+export function renderThemeOption(theme) {
+    const option = document.createElement('option');
+    option.textContent = theme.name;
+    option.value = theme.name;
+    return option;
+}
+
+export function renderAnimalOption(animal) {
+    const option = document.createElement('option');
+    option.textContent = animal.name;
+    option.value = animal.name;
+    return option;
+}
