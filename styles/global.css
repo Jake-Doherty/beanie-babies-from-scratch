@@ -31,5 +31,6 @@ header .logo {
 }
 
 main {
+    background-color: gray;
     padding: 20px;
 }
