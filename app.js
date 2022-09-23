@@ -14,6 +14,7 @@ const themeSelect = document.getElementById('theme-select');
 const animalSelect = document.getElementById('animal-select');
 const searchForm = document.getElementById('search-form');
 const notificationDisplay = document.getElementById('notification-display');
+const moreBeaniesButton = document.getElementById('more-beanies-button');
 
 /* State */
 let error = null;
@@ -22,6 +23,18 @@ let astroSigns = [];
 let themes = [];
 let beanies = [];
 let animals = [];
+
+let filter = {
+    name: '',
+    astroSign: '',
+    theme: '',
+    animal: '',
+};
+
+let paging = {
+    page: 1,
+    pageSize: 25,
+};
 
 /* Events */
 window.addEventListener('load', async () => {
@@ -35,6 +48,7 @@ window.addEventListener('load', async () => {
     if (!error) {
         displayAstroSignOptions();
     }
+    console.log(response);
 });
 
 window.addEventListener('load', async () => {
@@ -63,8 +77,27 @@ window.addEventListener('load', async () => {
     }
 });
 
-async function findBeanies(name, astroSign, theme, animal) {
-    const response = await getBeanies(name, astroSign, theme, animal);
+moreBeaniesButton.addEventListener('click', () => {
+    getMoreBeanies();
+});
+
+async function getMoreBeanies() {
+    paging.page++;
+    const response = await getBeanies(filter, paging);
+
+    error = response.error;
+    themes = response.data;
+    animals = response.data;
+    count = response.count;
+    const moreBeanies = response.data;
+    beanies = beanies.concat(moreBeanies);
+
+    displayNotifications();
+    displayMoreBeanies(moreBeanies);
+}
+
+async function findBeanies() {
+    const response = await getBeanies(filter, paging);
 
     error = response.error;
     beanies = response.data;
@@ -73,20 +106,20 @@ async function findBeanies(name, astroSign, theme, animal) {
     count = response.count;
 
     displayNotifications();
-    if (!error) {
-        displayBeanies();
-    }
+    displayBeanies();
 }
 
 searchForm.addEventListener('submit', (e) => {
     e.preventDefault();
+
     const formData = new FormData(searchForm);
-    findBeanies(
-        formData.get('name'),
-        formData.get('astroSign'),
-        formData.get('theme'),
-        formData.get('animal')
-    );
+
+    filter.name = formData.get('name');
+    filter.astroSign = formData.get('astroSign');
+    filter.theme = formData.get('theme');
+    filter.animal = formData.get('animal');
+
+    findBeanies();
 });
 
 /* Display Functions */
@@ -94,6 +127,10 @@ searchForm.addEventListener('submit', (e) => {
 function displayBeanies() {
     beanieList.innerHTML = '';
 
+    displayMoreBeanies();
+}
+
+function displayMoreBeanies(moreBeanies) {
     for (const beanie of beanies) {
         const beanieElement = renderBeanie(beanie);
         beanieList.append(beanieElement);
